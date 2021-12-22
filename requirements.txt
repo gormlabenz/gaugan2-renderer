@@ -10,7 +10,10 @@ crayons==0.4.0
 cryptography==36.0.0
 h11==0.12.0
 idna==3.3
+imageio==2.13.4
+numpy==1.21.5
 outcome==1.1.0
+Pillow==8.4.0
 pycodestyle==2.8.0
 pycparser==2.21
 pyOpenSSL==21.0.0

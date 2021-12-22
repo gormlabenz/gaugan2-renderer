@@ -2,6 +2,7 @@ import base64
 import os
 import time
 
+import imageio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,6 +12,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class Gaugan2Renderer:
     def __init__(self,):
+        self.wait_between_actions = 5
+        self.output_images = []
+
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
     def open(self):
@@ -67,7 +71,12 @@ class Gaugan2Renderer:
                                         basename)
 
             self.render_image(file_path)
-            time.sleep(10)
+            time.sleep(self.wait_between_actions)
             self.download_image(output_image)
+            self.output_images.append(output_image)
 
         self.driver.close()
+
+    def create_video(self, output_video):
+        images = [imageio.imread(image) for image in self.output_images]
+        imageio.mimsave(output_video, images, fps=10)
