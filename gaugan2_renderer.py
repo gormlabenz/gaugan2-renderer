@@ -8,14 +8,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 
 class Gaugan2Renderer:
     def __init__(self,):
         self.wait_between_actions = 5
         self.output_images = []
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
 
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options)
 
     def open(self):
         self.driver.get("http://gaugan.org/gaugan2/")
