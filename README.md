@@ -22,3 +22,38 @@ Renderer.create_video("./output_1.mp4")
 
 ```gaugan2_renderer.create_video(output_path)```
 - **output_path** the path to the rendered video
+
+# Segmentation Map Colors
+-  bridge: #5e5bc5
+-  bush: #606e32
+-  clouds: #696969
+-  dirt: #6e6e28
+-  fence: #706419
+-  flower: #760000
+-  fog: #77ba1d
+-  grass: #7bc800
+-  gravel: #7c32c8
+-  ground-other: #7d3054
+-  hill: #7ec864
+-  house: #7f4502
+-  mountain: #869664
+-  mud: #87716f
+-  pavement: #8b3027
+-  platform: #8f2a91
+-  river: #9364c8
+-  road: #946e28
+-  rock: #956432
+-  roof: #9600b1
+-  sand: #999900
+-  sea: #9ac6da
+-  sky: #9ceedd
+-  snow: #9e9eaa
+-  stone: #a1a164
+-  straw: #a2a3eb
+-  tree: #a8c832
+-  wall-brick: #aad16a
+-  wall-stone: #ae2974
+-  wall-wood: #b0c1c3
+-  water: #b1c8ff
+-  wood: #b57b00
+
