@@ -23,9 +23,9 @@ Renderer.create_video("./output_1.mp4")
 ```gaugan2_renderer.create_video(output_path)```
 - **output_path** the path to the rendered video
 # For best results, use:
-- Images with the size of 1024 px x 1024 px
-- Use the exact segmentation map colors 
-- No anti aliasing (no pixel should have a different color value than specified in the semgmentation map)
+- images with the size of 1024 px x 1024 px
+- the exact segmentation map colors 
+- no anti aliasing (no pixel should have a different color value than specified in the semgmentation map)
 # Segmentation Map Colors
 
 -  bridge: #5e5bc5
