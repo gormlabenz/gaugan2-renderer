@@ -1,7 +1,11 @@
 # gaugan2-renderer
 ## Create videos with gaugan2
 The gaugan2-renderer is a Python script that automatically uploads an image sequence to http://gaugan.org/gaugan2/ as a segmentation map, generates the output and creates a video from it.
-![Interface of the Gaugan2 Editor](https://miro.medium.com/max/2000/1*TlEbWHn6_CrUysjOR1IBiQ.png)
+
+https://user-images.githubusercontent.com/53308156/151351425-7dfdedfd-5fd4-4880-ab85-82983100e213.mp4
+
+A example video created by Gaugan2 Renderer. On the left the input video on the right the output video. 
+
 ### Usage
 Clone this repository and import the Gaugan2Renderer from gaugan2_renderer
 ```python
