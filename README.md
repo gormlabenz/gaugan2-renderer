@@ -25,7 +25,7 @@ Renderer.create_video("./output_1.mp4")
 # For best results, use:
 - images with the size of 1024 px x 1024 px
 - the exact segmentation map colors 
-- no anti aliasing (no pixel should have a different color value than specified in the semgmentation map)
+- no anti aliasing (every pixel should have a color value specified in the semgmentation map)
 # Segmentation Map Colors
 
 -  bridge: #5e5bc5
