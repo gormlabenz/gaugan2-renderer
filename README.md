@@ -6,7 +6,6 @@ https://user-images.githubusercontent.com/53308156/151340529-a87faa7e-eec1-479a-
 
 A example video created  by Gaugan2 Renderer (half resolution)
 
-![Interface of the Gaugan2 Editor](https://miro.medium.com/max/2000/1*TlEbWHn6_CrUysjOR1IBiQ.png)
 ### Usage
 Clone this repository and import the Gaugan2Renderer from gaugan2_renderer
 ```python
