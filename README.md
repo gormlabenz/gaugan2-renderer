@@ -10,15 +10,16 @@ A example video created by Gaugan2 Renderer. On the left the input video on the 
 
 ### Usage
 
-1. clone this repository and import the Gaugan2Renderer from gaugan2_renderer
+1. clone this repository and import the Gaugan2Renderer from gaugan2_renderer or use the example in `main.py`
 2. install the dependencies via `pip install -r requirements.txt`
+3. create a folder named `input_folder` and add there the segmentation maps you want to render
 
 ```python
-from gaugan2_renderer import Gaugan2Renderer
+from gaugan2_renderer import Gaugan2Renderer # import the gaugan2_renderer class from gaugan2_renderer.py
 
-renderer = Gaugan2Renderer()
-renderer.run("./input_folder", "./output_folder")
-renderer.create_video("./output.mp4")
+renderer = Gaugan2Renderer() # create an instance of the gaugan2_renderer class
+renderer.run("./input_folder", "./output_folder") # run the renderer
+renderer.create_video("./output.mp4") # create a video of the created images
 
 ```
 
@@ -27,7 +28,7 @@ renderer.create_video("./output.mp4")
 `gaugan2_renderer.run(input_folder, output_folder)`
 
 -   **input_folder** the folder with the segmentation maps that should be rendered
--   **output_folder** the folder with the rendered images
+-   **output_folder** the folder with the rendered images - if it does not exist, it will be created automatically
 
 `gaugan2_renderer.create_video(output_path)`
 
