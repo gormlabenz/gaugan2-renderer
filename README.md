@@ -17,12 +17,12 @@ A example video created by Gaugan2 Renderer. On the left the input video on the 
 from glob import glob
 from gaugan2_renderer import Gaugan2Renderer
 
-input_folder = glob("/input_folder_1/*")
-output_folder = glob("./output_folder_1")
+input_folder = glob("/input_folder")
+output_folder = glob("./output_folder")
 
-Renderer = Gaugan2Renderer()
-Renderer.run(input_folder, output_folder)
-Renderer.create_video("./output_1.mp4")
+renderer = Gaugan2Renderer()
+renderer.run(input_folder, output_folder)
+renderer.create_video("./output.mp4")
 ```
 
 # Api

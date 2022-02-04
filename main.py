@@ -1,8 +1,9 @@
-import os
 from glob import glob
-
 from gaugan2_renderer import Gaugan2Renderer
 
-Renderer = Gaugan2Renderer()
-Renderer.run(glob(os.getcwd() + "/input_images_5/*"), "./output_images_5")
-Renderer.create_video("./output_5.mp4")
+input_folder = glob("/input_folder")
+output_folder = glob("./output_folder")
+
+renderer = Gaugan2Renderer()
+renderer.run(input_folder, output_folder)
+renderer.create_video("./output.mp4")
