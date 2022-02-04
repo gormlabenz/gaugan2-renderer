@@ -12,7 +12,7 @@ A example video created by Gaugan2 Renderer. On the left the input video on the 
 
 1. clone this repository and import the Gaugan2Renderer from gaugan2_renderer or use the example in `main.py`
 2. install the dependencies via `pip install -r requirements.txt`
-3. create a folder named `input_folder` and add there the segmentation maps as PNG you want to render
+3. create a folder named `input_folder` and add there the segmentation maps as PNGs you want to render
 
 ```python
 from gaugan2_renderer import Gaugan2Renderer # import the gaugan2_renderer class from gaugan2_renderer.py
@@ -27,7 +27,7 @@ renderer.create_video("./output.mp4") # create a video of the created images
 
 `gaugan2_renderer.run(input_folder, output_folder)`
 
--   **input_folder** the folder with the segmentation maps that should be rendered, PNG required
+-   **input_folder** the folder with the segmentation maps that should be rendered, PNGs required
 -   **output_folder** the folder with the rendered images - if it does not exist, it will be created automatically
 
 `gaugan2_renderer.create_video(output_path)`
@@ -35,7 +35,7 @@ renderer.create_video("./output.mp4") # create a video of the created images
 -   **output_path** the path to the rendered video
 
 # For best results, use:
-
+-   PNG format for input images are required
 -   input images with the size of 1024 px x 1024 px
 -   the exact segmentation map colors
 -   no anti aliasing (every pixel should have a color value specified in the **Semgmentation Map Colors**)
