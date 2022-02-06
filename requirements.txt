@@ -2,3 +2,4 @@ imageio==2.13.4
 selenium==4.1.0
 webdriver_manager==3.5.2
 imageio-ffmpeg==0.4.5
+tqdm==4.62.3

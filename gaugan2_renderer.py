@@ -2,6 +2,7 @@ import base64
 import os
 import time
 from glob import glob
+from tqdm import tqdm
 
 import imageio
 from selenium import webdriver
@@ -69,10 +70,9 @@ class Gaugan2Renderer:
         self.open()
         self.create_output_dir()
 
-        for file_path in self.image_paths:
+        for file_path in tqdm(self.image_paths):
             file_path = os.path.abspath(file_path)
             basename = os.path.basename(file_path)
-            print(f"Rendering {basename}")
             output_image = os.path.join(self.output_path,
                                         basename)
 
