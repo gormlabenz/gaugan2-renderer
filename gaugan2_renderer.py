@@ -14,8 +14,8 @@ from selenium.webdriver.chrome.options import Options
 
 
 class Gaugan2Renderer:
-    def __init__(self,):
-        self.wait_between_actions = 5
+    def __init__(self, waiting_time=5):
+        self.waiting_time = waiting_time
         self.output_images = []
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -77,7 +77,7 @@ class Gaugan2Renderer:
                                         basename)
 
             self.render_image(file_path)
-            time.sleep(self.wait_between_actions)
+            time.sleep(self.waiting_time)
             self.download_image(output_image)
             self.output_images.append(output_image)
 
