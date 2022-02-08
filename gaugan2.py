@@ -13,7 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 
 
-class Gaugan2Renderer:
+class Renderer:
     def __init__(self, waiting_time=5):
         self.waiting_time = waiting_time
         self.output_images = []
