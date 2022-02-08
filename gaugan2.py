@@ -64,13 +64,13 @@ class Renderer:
             By.XPATH, '//*[@id="render"]').click()
 
     def run(self, input_folder, output_path):
-        self.image_paths = glob(input_folder + "/*.png")
+        self.input_image_paths = glob(input_folder + "/*.png")
         self.output_path = output_path
 
         self.open()
         self.create_output_dir()
 
-        for file_path in tqdm(self.image_paths):
+        for file_path in tqdm(self.input_image_paths):
             file_path = os.path.abspath(file_path)
             basename = os.path.basename(file_path)
             output_image = os.path.join(self.output_path,
@@ -86,3 +86,24 @@ class Renderer:
     def create_video(self, output_video):
         images = [imageio.imread(image) for image in self.output_images]
         imageio.mimsave(output_video, images, fps=10)
+
+
+class Editor:
+    def __init__(self, input_folder, output_folder):
+        self.input_folder = input_folder
+        self.output_folder = output_folder
+
+        self.input_image_paths = glob(input_folder + "/*.png")
+
+    def run(self):
+        for file_path in tqdm(self.input_image_paths):
+            file_path = os.path.abspath(file_path)
+            basename = os.path.basename(file_path)
+            output_image_path = os.path.join(self.output_folder,
+                                             basename)
+
+            image = self.edit(imageio.imread(file_path))
+            imageio.imwrite(output_image_path, image)
+
+    def edit(self, image):
+        return image
