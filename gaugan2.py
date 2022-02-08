@@ -2,15 +2,17 @@ import base64
 import os
 import time
 from glob import glob
-from tqdm import tqdm
 
+import cv2
 import imageio
+import numpy as np
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from tqdm import tqdm
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
 
 
 class Renderer:
@@ -93,10 +95,13 @@ class Editor:
         self.input_folder = input_folder
         self.output_folder = output_folder
 
+        os.makedirs(self.output_folder, exist_ok=True)
+
         self.input_image_paths = glob(input_folder + "/*.png")
 
     def run(self):
-        for file_path in tqdm(self.input_image_paths):
+
+        for file_path in tqdm(self.input_image_paths[:10]):
             file_path = os.path.abspath(file_path)
             basename = os.path.basename(file_path)
             output_image_path = os.path.join(self.output_folder,
@@ -107,3 +112,32 @@ class Editor:
 
     def edit(self, image):
         return image
+
+
+class Contours(Editor):
+    def __init__(self, input_folder, output_folder):
+        super().__init__(input_folder, output_folder)
+
+    def edit(self, image):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image = cv2.GaussianBlur(image, (81, 81), 0)
+        ret, image = cv2.threshold(image, 100, 255, cv2.THRESH_BINARY)
+        contours, hierarchy = cv2.findContours(
+            image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        mask = np.zeros((*image.shape, 4), dtype=np.uint8)
+        image = cv2.drawContours(
+            mask, contours, -1, (0, 0, 0, 255), 1)
+
+        image = image[4:-4, 4:-4]
+        # add 4 pixel border around image
+        image = cv2.copyMakeBorder(
+            image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+
+        return image
+
+
+if __name__ == "__main__":
+    contours = Contours(input_folder="input_origin",
+                        output_folder="input_sketch")
+    contours.run()
