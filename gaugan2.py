@@ -1,29 +1,39 @@
 import base64
 import os
+import re
 import time
 from glob import glob
+from itertools import zip_longest
 
 import cv2
 import imageio
 import numpy as np
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
-from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    return [atoi(c) for c in re.split(r'(\d+)', text)]
 
 
 class Renderer:
     def __init__(self, waiting_time=5):
         self.waiting_time = waiting_time
         self.output_images = []
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        firefox_options = Options()
+        firefox_options.headless = True
 
-        self.driver = webdriver.Chrome(
-            ChromeDriverManager().install(), options=chrome_options)
+        self.driver = webdriver.Firefox(
+            executable_path=GeckoDriverManager().install(), options=firefox_options)
 
     def open(self):
         self.driver.get("http://gaugan.org/gaugan2/")
@@ -33,15 +43,14 @@ class Renderer:
         self.close_popups()
 
     def close_popups(self):
-        close_button = self.driver.find_element(By.XPATH,
-                                                "/html/body/div[2]/div/header/button")
-        if close_button:
+        if close_button := self.driver.find_element(
+            By.XPATH, "/html/body/div[2]/div/header/button"
+        ):
             close_button.click()
 
-        terms_and_conditions = self.driver.find_element(
-            By.XPATH, '//*[@id="myCheck"]')
-
-        if terms_and_conditions:
+        if terms_and_conditions := self.driver.find_element(
+            By.XPATH, '//*[@id="myCheck"]'
+        ):
             terms_and_conditions.click()
 
     def download_image(self, file_path):
@@ -54,31 +63,47 @@ class Renderer:
         with open(file_path, 'wb') as f:
             f.write(canvas_png)
 
-    def create_output_dir(self):
-        os.makedirs(self.output_path, exist_ok=True)
+    def upload(self, fileid, loadid, file_path):
+        self.driver.find_element(
+            By.XPATH, f'//*[@id="{fileid}"]').send_keys(file_path)
+        self.driver.find_element(
+            By.XPATH, f'//*[@id="{loadid}"]').click()
 
-    def render_image(self, file_path):
-        self.driver.find_element(
-            By.XPATH, '//*[@id="segmapfile"]').send_keys(file_path)
-        self.driver.find_element(
-            By.XPATH, '//*[@id="btnSegmapLoad"]').click()
+    def render_image(self):
         self.driver.find_element(
             By.XPATH, '//*[@id="render"]').click()
 
-    def run(self, input_folder, output_path):
-        self.input_image_paths = glob(input_folder + "/*.png")
-        self.output_path = output_path
-
+    def run(self, output_path, segmentation_map_folder=None, sketch_folder=None):
         self.open()
-        self.create_output_dir()
+        os.makedirs(output_path, exist_ok=True)
 
-        for file_path in tqdm(self.input_image_paths):
-            file_path = os.path.abspath(file_path)
-            basename = os.path.basename(file_path)
+        if segmentation_map_folder is None:
+            segmentation_map_folder = []
+        if sketch_folder is None:
+            sketch_folder = []
+
+        self.segmentation_map_paths = glob(
+            segmentation_map_folder + "/*.png")
+
+        self.sketch_paths = glob(
+            sketch_folder + "/*.png")
+
+        if len(self.sketch_paths) != 0:
+            self.driver.find_element(
+                By.XPATH, '//*[@id="vis_edge"]').click()
+
+        for index, (segmentation_map, sketch) in tqdm(enumerate(zip_longest(self.segmentation_map_paths, self.sketch_paths, fillvalue=None))):
+            if segmentation_map:
+                segmentation_map = os.path.abspath(segmentation_map)
+                self.upload('segmapfile', 'btnSegmapLoad', segmentation_map)
+
+            if sketch:
+                sketch = os.path.abspath(sketch)
+                self.upload('sketchfile', 'btnSketchLoad', sketch)
+
             output_image = os.path.join(self.output_path,
-                                        basename)
+                                        index + '.png')
 
-            self.render_image(file_path)
             time.sleep(self.waiting_time)
             self.download_image(output_image)
             self.output_images.append(output_image)
@@ -97,11 +122,11 @@ class Editor:
 
         os.makedirs(self.output_folder, exist_ok=True)
 
-        self.input_image_paths = glob(input_folder + "/*.png")
+        self.segmentation_map_paths = glob(input_folder + "/*.png")
 
     def run(self):
 
-        for file_path in tqdm(self.input_image_paths[:10]):
+        for file_path in tqdm(self.segmentation_map_paths):
             file_path = os.path.abspath(file_path)
             basename = os.path.basename(file_path)
             output_image_path = os.path.join(self.output_folder,
@@ -138,6 +163,6 @@ class Contours(Editor):
 
 
 if __name__ == "__main__":
-    contours = Contours(input_folder="input_origin",
+    contours = Contours(input_folder="input",
                         output_folder="input_sketch")
     contours.run()
