@@ -9,20 +9,19 @@ import cv2
 import imageio
 import numpy as np
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from tqdm import tqdm
 from webdriver_manager.firefox import GeckoDriverManager
 
 
-def atoi(text):
-    return int(text) if text.isdigit() else text
-
-
-def natural_keys(text):
-    return [atoi(c) for c in re.split(r'(\d+)', text)]
+def natural_sort(l):
+    def convert(text): return int(text) if text.isdigit() else text.lower()
+    def alphanum_key(key): return [convert(c)
+                                   for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
 
 
 class Renderer:
@@ -84,13 +83,17 @@ class Renderer:
 
         self.segmentation_map_paths = glob(
             segmentation_map_folder + "/*.png")
+        natural_sort(self.segmentation_map_paths)
 
         self.sketch_paths = glob(
             sketch_folder + "/*.png")
+        natural_sort(self.sketch_paths)
+
+        print(self.segmentation_map_paths)
 
         if len(self.sketch_paths) != 0:
             self.driver.find_element(
-                By.XPATH, '//*[@id="vis_edge"]').click()
+                By.XPATH, '//*[@id="enable_edge"]').click()
 
         for index, (segmentation_map, sketch) in tqdm(enumerate(zip_longest(self.segmentation_map_paths, self.sketch_paths, fillvalue=None))):
             if segmentation_map:
@@ -101,8 +104,10 @@ class Renderer:
                 sketch = os.path.abspath(sketch)
                 self.upload('sketchfile', 'btnSketchLoad', sketch)
 
-            output_image = os.path.join(self.output_path,
-                                        index + '.png')
+            self.render_image()
+
+            output_image = os.path.join(output_path,
+                                        str(index) + '.png')
 
             time.sleep(self.waiting_time)
             self.download_image(output_image)
