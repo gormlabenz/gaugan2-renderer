@@ -35,10 +35,10 @@ renderer.create_video("./output.mp4") # create a video of the created images
 -   **output_path** the path to the rendered video
 
 # For best results, use:
--   PNG format for input images are required
+-   PNG format - required
 -   input images with the size of 1024 px x 1024 px
 -   the exact segmentation map colors
--   no anti aliasing (every pixel should have a color value specified in the **Semgmentation Map Colors**)
+-   no anti aliasing (every pixel should have a color value specified in **Semgmentation Map Colors**)
 
 # Segmentation Map Colors
 
