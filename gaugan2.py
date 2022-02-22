@@ -29,7 +29,7 @@ class Renderer:
         self.waiting_time = waiting_time
         self.output_images = []
         firefox_options = Options()
-        firefox_options.headless = True
+        #firefox_options.headless = True
 
         self.driver = webdriver.Firefox(
             executable_path=GeckoDriverManager().install(), options=firefox_options)
@@ -77,41 +77,42 @@ class Renderer:
         os.makedirs(output_path, exist_ok=True)
 
         if segmentation_map_folder is None:
-            segmentation_map_folder = []
+            self.segmentation_map_paths = []
+        else:
+            self.segmentation_map_paths = glob(
+                segmentation_map_folder + "/*.png")
+
+            natural_sort(self.segmentation_map_paths)
+
         if sketch_folder is None:
-            sketch_folder = []
-
-        self.segmentation_map_paths = glob(
-            segmentation_map_folder + "/*.png")
-        natural_sort(self.segmentation_map_paths)
-
-        self.sketch_paths = glob(
-            sketch_folder + "/*.png")
-        natural_sort(self.sketch_paths)
-
-        print(self.segmentation_map_paths)
-
-        if len(self.sketch_paths) != 0:
+            self.sketch_paths = []
+        else:
+            self.sketch_paths = glob(
+                sketch_folder + "/*.png")
+            natural_sort(self.sketch_paths)
             self.driver.find_element(
                 By.XPATH, '//*[@id="enable_edge"]').click()
 
         for index, (segmentation_map, sketch) in tqdm(enumerate(zip_longest(self.segmentation_map_paths, self.sketch_paths, fillvalue=None))):
+            output_image = f"{index:03d}"
+
             if segmentation_map:
+                output_image = os.path.basename(segmentation_map)
                 segmentation_map = os.path.abspath(segmentation_map)
                 self.upload('segmapfile', 'btnSegmapLoad', segmentation_map)
 
             if sketch:
+                output_image = os.path.basename(sketch)
                 sketch = os.path.abspath(sketch)
                 self.upload('sketchfile', 'btnSketchLoad', sketch)
 
             self.render_image()
 
-            output_image = os.path.join(output_path,
-                                        str(index) + '.png')
+            output_image_path = os.path.join(output_path, output_image)
 
             time.sleep(self.waiting_time)
-            self.download_image(output_image)
-            self.output_images.append(output_image)
+            self.download_image(output_image_path)
+            self.output_images.append(output_image_path)
 
         self.driver.close()
 
@@ -150,8 +151,10 @@ class Contours(Editor):
 
     def edit(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        image = cv2.GaussianBlur(image, (81, 81), 0)
+        image = cv2.GaussianBlur(image, (101, 101), 0)
         ret, image = cv2.threshold(image, 100, 255, cv2.THRESH_BINARY)
+        image = cv2.Canny(image, 100, 200)
+
         contours, hierarchy = cv2.findContours(
             image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -160,7 +163,7 @@ class Contours(Editor):
             mask, contours, -1, (0, 0, 0, 255), 1)
 
         image = image[4:-4, 4:-4]
-        # add 4 pixel border around image
+
         image = cv2.copyMakeBorder(
             image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 

@@ -4,6 +4,6 @@ from gaugan2 import Renderer, Contours
 contours.run() """
 
 renderer = Renderer(waiting_time=10)
-renderer.run("./output", segmentation_map_folder="./input_segmentation_map",
-             sketch_folder="./input_sketch")
+renderer.run("./output_5",
+             segmentation_map_folder="./input_seg")
 # renderer.create_video("./output.mp4")
